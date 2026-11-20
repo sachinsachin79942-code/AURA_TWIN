@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#070b10">
+    <meta name="description" content="AURA-TWIN is a simulated, privacy-first astronaut health digital twin dashboard.">
+    <title>AURA-TWIN | Crew Health Intelligence</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#crew-id">Skip to sign-in</a>
+    <main class="login-screen" id="login-screen">
+      <section class="login-card" aria-labelledby="login-title">
+        <div class="login-corners" aria-hidden="true"></div>
+        <div class="login-progress" aria-label="Demo sign-in, step 1 of 4">
+          <span class="progress-active"></span><i></i><i></i><i></i>
+        </div>
+        <p class="login-brand" aria-hidden="true">AURA-TWIN</p>
+        <h1 id="login-title">Crew health console</h1>
+        <p class="login-description">Sign in with your Crew ID to open a sample baseline, demo vitals, and onboard record.</p>
+        <form id="login-form" class="login-form">
+          <label for="crew-id">CREW ID</label>
+          <input id="crew-id" name="crewId" type="text" value="Crew-09" autocomplete="username" required maxlength="32" spellcheck="false">
+          <label for="passcode">PASSCODE</label>
+          <input id="passcode" name="passcode" type="password" autocomplete="off" aria-describedby="login-hint" required>
+          <p class="login-hint" id="login-hint">Demo access only. Any passcode is accepted locally and is never saved.</p>
+          <button class="login-submit" type="submit">Enter Console</button>
+        </form>
+        <p class="login-privacy">DEMO SIGN-IN: NOTHING IS SENT TO A SERVER. YOUR CREW ID IS SAVED ONLY IN THIS BROWSER.</p>
+      </section>
+    </main>
+    <div id="app-shell" hidden>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="AURA-TWIN home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="m12 2 1.8 7.1L21 12l-7.2 1.8L12 21l-1.8-7.2L3 12l7.2-2.9L12 2Z" stroke="currentColor" stroke-width="1.5"/><path d="m19 2 .8 2.2L22 5l-2.2.8L19 8l-.8-2.2L16 5l2.2-.8L19 2Z" fill="currentColor"/></svg>
+        </span>
+        <span>AURA<span class="brand-accent">-TWIN</span></span>
+      </a>
+      <div class="topbar-meta">
+        <span class="mission-tag">ARTEMIS III <span>/</span> CREW NODE 01</span>
+        <span class="connection"><i></i> LOCAL SIMULATION</span>
+        <button class="icon-button" id="about-button" type="button" aria-label="About this prototype" title="About this prototype">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 11v5m0-8h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </button>
+        <button class="sign-out-button" id="sign-out-button" type="button">Sign out</button>
+      </div>
+    </header>
+
+    <div class="risk-banner" role="status">
+      <div class="risk-banner-inner">
+        <span class="risk-indicator"><span class="alert-icon" aria-hidden="true">!</span> LEVEL 3 <span class="slash">/</span> <strong id="risk-level">PREPARE</strong></span>
+        <span class="banner-copy" id="banner-copy">Predictive multi-system drift detected in 72-hour projection window.</span>
+        <span class="banner-code">RISK MODEL <b>v0.9.4</b></span>
+      </div>
+    </div>
+
+    <main id="main" class="page-shell" tabindex="-1">
+      <section class="intro">
+        <div>
+          <p class="eyebrow">OVERVIEW <span>/</span> LIVE TELEMETRY <span class="demo-label">SIMULATED DATA</span></p>
+          <h1>Good morning, <span id="crew-greeting">Crew-09.</span></h1>
+          <p class="intro-copy">A local preview of a consent-first health intelligence console. No biometric sensors are connected; the microphone stays off until you start a check-in.</p>
+          <div class="intro-meta">
+            <span class="mono"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4l2.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><time id="clock">--:--:-- UTC</time></span>
+            <span class="privacy-note"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.5 16 5v4.5c0 3.8-2.5 6.4-6 8-3.5-1.6-6-4.2-6-8V5l6-2.5Z" stroke="currentColor" stroke-width="1.4"/><path d="m7.5 9.8 1.7 1.7 3.4-3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Mic off until check-in <span>·</span> speech input by consent</span>
+          </div>
+        </div>
+        <button class="button button-secondary export-button" id="export-button" type="button">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.5v9m0 0 3.3-3.3M10 11.5 6.7 8.2M3.5 12.5v3h13v-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Export health report
+        </button>
+      </section>
+
+      <section class="metric-grid" aria-label="Current simulated metrics">
+        <article class="metric-card">
+          <div class="metric-top"><span class="metric-icon cyan">♡</span><span class="metric-trend positive">+2.1%</span></div>
+          <p class="metric-label">Heart rate</p>
+          <p class="metric-value">68 <small>BPM</small></p>
+          <div class="metric-foot"><span class="mini-line cyan-line"></span><span>within baseline</span></div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-top"><span class="metric-icon green">◉</span><span class="metric-trend neutral">stable</span></div>
+          <p class="metric-label">SpO₂ estimate</p>
+          <p class="metric-value">98.4<small>%</small></p>
+          <div class="metric-foot"><span class="mini-line green-line"></span><span>within baseline</span></div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-top"><span class="metric-icon violet">⌁</span><span class="metric-trend positive">−0.04 today</span></div>
+          <p class="metric-label">Voice fatigue</p>
+          <p class="metric-value">0.18 <small>INDEX</small></p>
+          <div class="metric-foot"><span class="mini-line violet-line"></span><span>improving trend</span></div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-top"><span class="metric-icon amber">⌘</span><span class="metric-trend neutral">stable</span></div>
+          <p class="metric-label">Cognitive load</p>
+          <p class="metric-value">0.31 <small>QUOTIENT</small></p>
+          <div class="metric-foot"><span class="mini-line amber-line"></span><span>within baseline</span></div>
+        </article>
+      </section>
+
+      <section class="feature-grid">
+        <article class="panel signal-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">SENSOR HONESTY</p><h2>Signal quality gate</h2></div>
+            <span class="status-pill" id="signal-status"><i></i> GOOD INPUT</span>
+          </div>
+          <p class="panel-copy">Forecasts stay qualified when signal quality drops. Try the degraded-input simulation to see confidence change.</p>
+          <div class="confidence-row">
+            <div><span class="small-label">MODEL CONFIDENCE</span><strong id="confidence-value">94.8<span>%</span></strong></div>
+            <div class="confidence-track" aria-label="Model confidence"><span id="confidence-bar"></span></div>
+          </div>
+          <div class="signal-controls">
+            <label class="switch-label" for="degraded-toggle"><span>Simulate weak signal</span><span class="switch"><input id="degraded-toggle" type="checkbox"><span class="switch-track"></span></span></label>
+            <p class="fine-print" id="signal-message">All sample streams are nominal. Forecast confidence is high.</p>
+          </div>
+        </article>
+
+        <article class="panel explain-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">EXPLAINABLE FORECAST</p><h2>Why <span id="explain-level">PREPARE</span>?</h2></div>
+            <span class="help-mark" title="Illustrative model output">i</span>
+          </div>
+          <p class="panel-copy">Primary driver: cephalad fluid shift. Supporting evidence: HRV drift, voice fatigue trend, and sleep debt.</p>
+          <div class="driver-list">
+            <div class="driver"><div class="driver-top"><span>Fluid shift</span><strong>72%</strong></div><div class="driver-track"><i class="driver-cyan" style="width:72%"></i></div></div>
+            <div class="driver"><div class="driver-top"><span>Sleep debt</span><strong>44%</strong></div><div class="driver-track"><i class="driver-amber" style="width:44%"></i></div></div>
+            <div class="driver"><div class="driver-top"><span>Voice fatigue</span><strong>28%</strong></div><div class="driver-track"><i class="driver-violet" style="width:28%"></i></div></div>
+          </div>
+          <p class="note-line"><span class="note-dot"></span>No acute failure pattern detected</p>
+        </article>
+      </section>
+
+      <section class="feature-grid second-row">
+        <article class="panel simulator-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">COUNTERFACTUAL SIMULATOR</p><h2>Change the next 72 hours</h2></div>
+            <span class="local-tag">LOCAL ONLY</span>
+          </div>
+          <p class="panel-copy">Explore a sample scenario without changing the displayed baseline.</p>
+          <div class="scenario-control">
+            <label for="sleep-slider">Sleep opportunity <strong><span id="sleep-value">7</span> hrs</strong></label>
+            <input id="sleep-slider" type="range" min="3" max="10" value="7">
+            <div class="range-scale"><span>3 hrs</span><span>10 hrs</span></div>
+          </div>
+          <div class="scenario-control hydration-control">
+            <label for="hydration-slider">Hydration plan <strong><span id="hydration-value">60</span>%</strong></label>
+            <input id="hydration-slider" type="range" min="0" max="100" step="10" value="60">
+            <div class="range-scale"><span>None</span><span>Optimized</span></div>
+          </div>
+          <div class="simulator-result">
+            <div><span class="small-label">PROJECTED RISK SCORE</span><strong id="scenario-score">48<span>%</span></strong></div>
+            <button class="button button-primary" id="run-scenario" type="button">Run scenario <span aria-hidden="true">↗</span></button>
+          </div>
+          <p class="result-message" id="scenario-message" aria-live="polite">Adjust inputs and run a local scenario.</p>
+        </article>
+
+        <article class="panel handoff-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">DECISION LADDER</p><h2>Mission-ready handoff</h2></div>
+            <span class="status-pill amber-pill"><i></i> PREPARE</span>
+          </div>
+          <p class="panel-copy">A concise SBAR summary for the crew chief, preserving uncertainty and evidence.</p>
+          <div class="sbar-list">
+            <div><span class="sbar-letter">S</span><p><strong>Situation</strong><span>Gradual multi-system drift projected within 72 hours.</span></p></div>
+            <div><span class="sbar-letter">B</span><p><strong>Background</strong><span>Sample baseline established; no acute pattern detected.</span></p></div>
+            <div><span class="sbar-letter">A</span><p><strong>Assessment</strong><span>Fluid shift leads; sleep debt and HRV support the trend.</span></p></div>
+            <div><span class="sbar-letter">R</span><p><strong>Recommendation</strong><span>Observe, review recovery plan, reassess at next check-in.</span></p></div>
+          </div>
+          <div class="ladder"><span class="active">1 <i>Observe</i></span><b></b><span>2 <i>Explain</i></span><b></b><span>3 <i>Prepare</i></span><b></b><span>4 <i>Escalate</i></span></div>
+        </article>
+      </section>
+
+      <section class="panel projection-panel">
+        <div class="panel-heading">
+          <div><p class="eyebrow">PREDICTIVE SIMULATION</p><h2>72-hour risk projection</h2></div>
+          <div class="chart-legend"><span><i class="legend-line"></i>Projected risk</span><span><i class="legend-dash"></i>Watch threshold</span></div>
+        </div>
+        <div class="projection-chart" aria-label="Projected risk rises from 12 percent now to 48 percent at 72 hours">
+          <div class="chart-threshold"><span>WATCH 30%</span></div>
+          <svg class="chart-svg" viewBox="0 0 1000 180" preserveAspectRatio="none" role="img" aria-label="Risk trend gradually increases over 72 hours">
+            <defs><linearGradient id="area-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#35d9dc" stop-opacity=".2"/><stop offset="1" stop-color="#35d9dc" stop-opacity="0"/></linearGradient></defs>
+            <path class="chart-area" d="M0 142 C110 138 135 128 200 126 S335 116 400 103 S530 91 600 83 S730 65 800 59 S925 35 1000 27 L1000 180 L0 180Z"/>
+            <path class="chart-path" d="M0 142 C110 138 135 128 200 126 S335 116 400 103 S530 91 600 83 S730 65 800 59 S925 35 1000 27"/>
+            <circle class="chart-point" cx="0" cy="142" r="5"/><circle class="chart-point" cx="200" cy="126" r="5"/><circle class="chart-point" cx="400" cy="103" r="5"/><circle class="chart-point" cx="600" cy="83" r="5"/><circle class="chart-point" cx="800" cy="59" r="5"/><circle class="chart-point final-point" cx="1000" cy="27" r="6"/>
+          </svg>
+          <div class="chart-labels"><span>NOW <strong>NOMINAL <b>12%</b></strong></span><span>+12H <strong>NOMINAL <b>18%</b></strong></span><span>+24H <strong>WATCH <b>29%</b></strong></span><span>+48H <strong>WATCH <b>36%</b></strong></span><span>+72H <strong>PREPARE <b>48%</b></strong></span></div>
+        </div>
+      </section>
+
+      <section class="lower-grid">
+        <article class="panel twin-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">BIO-DIGITAL TWIN</p><h2>Physiological state vector</h2></div>
+            <span class="status-pill"><i></i> LIVE SIM</span>
+          </div>
+          <div class="twin-content">
+            <div class="state-score"><strong>0.18</strong><span>STATE LOAD</span><div class="state-ring"><span></span></div></div>
+            <div class="vector-list">
+              <div><span><i class="vector-dot cardio"></i>P <small>cardio</small></span><b>0.22</b><div class="vector-track"><i style="width:22%"></i></div></div>
+              <div><span><i class="vector-dot fluid"></i>C <small>fluid</small></span><b>0.41</b><div class="vector-track"><i style="width:41%"></i></div></div>
+              <div><span><i class="vector-dot neuro"></i>F <small>neuro</small></span><b>0.31</b><div class="vector-track"><i style="width:31%"></i></div></div>
+              <div><span><i class="vector-dot accum"></i>R <small>accum.</small></span><b>0.08</b><div class="vector-track"><i style="width:8%"></i></div></div>
+            </div>
+          </div>
+          <div class="twin-foot"><span>Current state</span><span>Baseline envelope</span><strong>Model confidence <b id="twin-confidence">94.8%</b></strong></div>
+        </article>
+
+        <article class="panel timeline-panel">
+          <div class="panel-heading"><div><p class="eyebrow">PERSONAL HEALTH TIMELINE</p><h2>Recent model events</h2></div><span class="local-tag">ENCRYPTED</span></div>
+          <ol class="timeline">
+            <li><i class="timeline-marker cyan-marker"></i><div><strong>Baseline established</strong><span>Just now <b>·</b> locally encrypted</span></div></li>
+            <li><i class="timeline-marker green-marker"></i><div><strong>Sample telemetry initialized</strong><span>14 min ago <b>·</b> locally encrypted</span></div></li>
+            <li><i class="timeline-marker amber-marker"></i><div><strong>Fluid shift trend detected</strong><span>28 min ago <b>·</b> locally encrypted</span></div></li>
+          </ol>
+        </article>
+      </section>
+
+      <section class="lower-grid bottom-grid">
+        <article class="panel sensing-panel">
+          <div class="panel-heading"><div><p class="eyebrow">AMBIENT PERCEPTION</p><h2>Edge sensing pipeline</h2></div><span class="status-pill"><i></i> DEMO MODE</span></div>
+          <div class="pipeline">
+            <div><span class="pipeline-icon cyan">◉</span><p><strong>Optical signal</strong><span>Simulated sample / 60 FPS</span></p><b class="stream-state">SIMULATED</b></div>
+            <div><span class="pipeline-icon violet">⌁</span><p><strong>Acoustic features</strong><span>Simulated sample / 48 kHz</span></p><b class="stream-state">SIMULATED</b></div>
+            <div><span class="pipeline-icon green">⌘</span><p><strong>Edge inference</strong><span>Local demo / 12.8 TOPS</span></p><b class="stream-state">NOMINAL</b></div>
+          </div>
+          <div class="pipeline-steps"><span>Capture</span><b>→</b><span>Extract</span><b>→</b><span>Simulate</span><b>→</b><span>Forecast</span></div>
+        </article>
+        <article class="panel environment-panel">
+          <div class="panel-heading"><div><p class="eyebrow">MISSION ENVIRONMENT</p><h2>Cabin telemetry</h2></div><span class="local-tag">SAMPLE</span></div>
+          <div class="environment-grid">
+            <div><span>Cabin O₂</span><strong>20.8<small>%</small></strong></div>
+            <div><span>Radiation dose</span><strong>0.84<small>mSv</small></strong></div>
+            <div><span>Temperature</span><strong>21.4<small>°C</small></strong></div>
+            <div><span>Sleep debt</span><strong>3.2<small>hrs</small></strong></div>
+          </div>
+          <div class="environment-foot"><span><i></i> Cabin systems nominal</span><span>Uplink window <b>02:14:22</b></span></div>
+        </article>
+      </section>
+
+      <section class="panel astrodoc-panel" aria-labelledby="astrodoc-title">
+        <div class="astrodoc-icon" aria-hidden="true">✦</div>
+        <div class="astrodoc-content">
+          <div class="panel-heading"><div><p class="eyebrow">OFFLINE MEDICAL GUIDANCE <span class="demo-label">SAMPLE RESPONSE</span></p><h2 id="astrodoc-title">AstroDoc</h2></div><span class="status-pill"><i></i> READY</span></div>
+          <p class="astrodoc-message" id="astrodoc-message">All monitored sample vitals are within operational limits. I’m tracking a mild upward trend in fluid shift. No immediate action indicated in this demo.</p>
+          <form id="astrodoc-form" class="astrodoc-form">
+            <label class="visually-hidden" for="astrodoc-input">Ask AstroDoc a question</label>
+            <input id="astrodoc-input" type="text" placeholder="Ask about this sample health state…" autocomplete="off">
+            <button class="button button-primary" type="submit">Ask <span aria-hidden="true">↗</span></button>
+          </form>
+          <p class="astrodoc-disclaimer">Demo only · not medical advice · spoken input may be processed by your browser’s speech service</p>
+        </div>
+      </section>
+
+      <section class="panel voice-panel" aria-labelledby="voice-title">
+        <div class="voice-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="12" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3m-4 0h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <div class="voice-content">
+          <div class="panel-heading">
+            <div><p class="eyebrow">AURA <span class="demo-label">VOICE CHECK-IN</span></p><h2 id="voice-title">AURA Voice Assistant</h2></div>
+            <span class="status-pill" id="voice-status-pill"><i></i> MIC OFF</span>
+          </div>
+          <p class="voice-welcome" id="voice-welcome" aria-live="polite">AURA will welcome you after sign-in and ask how you’re feeling.</p>
+          <div class="voice-controls">
+            <button class="button button-primary" id="voice-start" type="button">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7.5" y="2.5" width="5" height="10" rx="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 9.5a5.5 5.5 0 0 0 11 0M10 15v2.5m-3 0h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Start voice check-in
+            </button>
+            <button class="button button-secondary" id="voice-stop" type="button" hidden>Stop listening</button>
+            <button class="button button-secondary" id="voice-repeat" type="button">Repeat welcome</button>
+            <label class="speak-toggle"><input id="speak-replies" type="checkbox" checked> Speak replies</label>
+          </div>
+          <p class="voice-status" id="voice-status" role="status" aria-live="polite">Microphone is off. Start a check-in when you’re ready.</p>
+          <p class="voice-transcript" id="voice-transcript" aria-live="polite" aria-atomic="true"></p>
+          <p class="voice-disclaimer">Microphone is used only while listening. Browser speech recognition may process live audio with its provider. This demo does not save audio or transcripts.</p>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span><span class="footer-mark">A</span> AURA-TWIN <span class="footer-separator">/</span> BIO-DIGITAL HEALTH INTELLIGENCE</span>
+        <span>SIMULATED DATA ONLY <span class="footer-separator">·</span> MIC BY CONSENT</span>
+      </footer>
+    </main>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <dialog class="about-dialog" id="about-dialog">
+      <div class="dialog-heading"><div><p class="eyebrow">PROTOTYPE NOTICE</p><h2>About this demo</h2></div><button class="icon-button" id="close-about" type="button" aria-label="Close dialog">×</button></div>
+      <p>AURA-TWIN is an illustrative interface using fictional, simulated values. It does not connect to biometric sensors, transmit your Crew ID, verify passcodes, provide medical advice, or contact emergency services. Only the Crew ID is stored in this browser. If you start a voice check-in, your browser’s speech service may process live microphone audio; this demo does not save audio or transcripts.</p>
+      <button class="button button-primary dialog-done" id="done-about" type="button">Understood</button>
+    </dialog>
+    <dialog class="about-dialog voice-consent-dialog" id="voice-consent-dialog" aria-labelledby="voice-consent-title">
+      <div class="dialog-heading"><div><p class="eyebrow">VOICE CHECK-IN</p><h2 id="voice-consent-title">Allow voice input?</h2></div><button class="icon-button" id="close-voice-consent" type="button" aria-label="Close dialog">×</button></div>
+      <p>Your microphone remains off until you continue. The browser may send live audio to its speech-recognition provider to create a transcript. AURA uses the transcript to answer in this page; this demo does not save audio or transcripts.</p>
+      <div class="consent-actions">
+        <button class="button button-secondary" id="cancel-voice-consent" type="button">Not now</button>
+        <button class="button button-primary" id="allow-voice-consent" type="button">Continue to microphone</button>
+      </div>
+    </dialog>
+    </div>
+  </body>
+</html>
